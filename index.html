@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--SANTECO;build=v2;2026-07-02--><!DOCTYPE html>
 <html lang="es-MX"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="santeco-cutoff" content="2026-06-30">
@@ -8,7 +8,7 @@
 <script>
 (async()=>{
   const N=25;let b="";
-  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt",{cache:"no-store"});b+=(await r.text());}
+  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt?v=2",{cache:"no-store"});b+=(await r.text());}
   b=b.replace(/\s/g,"");
   const by=Uint8Array.from(atob(b),c=>c.charCodeAt(0));
   const s=new Blob([by]).stream().pipeThrough(new DecompressionStream("gzip"));
