@@ -8,7 +8,7 @@
 <script>
 (async()=>{
   const N=25;let b="";
-  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt?v=2026-07-17",{cache:"no-store"});b+=(await r.text());}
+  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt?v=2026-07-17-v4",{cache:"no-store"});b+=(await r.text());}
   b=b.replace(/\s/g,"");
   const by=Uint8Array.from(atob(b),c=>c.charCodeAt(0));
   const s=new Blob([by]).stream().pipeThrough(new DecompressionStream("gzip"));
