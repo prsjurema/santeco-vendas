@@ -2,16 +2,47 @@
 <html lang="es-MX"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="santeco-cutoff" content="2026-08-20">
-<meta name="santeco-published" content="2026-08-20 08:12">
+<meta name="santeco-published" content="2026-08-20 08:24">
 <title>Reporte de Ventas Santeco</title></head>
 <body>
 <script>
 (async()=>{
   const N=25;let b="";
-  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt?v=2026-08-20-v14",{cache:"no-store"});b+=(await r.text());}
+  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt?v=2026-08-20-v15",{cache:"no-store"});b+=(await r.text());}
   b=b.replace(/\s/g,"");
   const by=Uint8Array.from(atob(b),c=>c.charCodeAt(0));
   const s=new Blob([by]).stream().pipeThrough(new DecompressionStream("gzip"));
   document.open();document.write(await new Response(s).text());document.close();
+  vigilarFrescura();
 })();
+
+// Sello de frescura: el panel es HTML estático y no se recarga solo. Una pestaña
+// abierta hace días mostraba datos viejos en silencio (pasó 18-19/08/2026).
+// Si hay corte nuevo publicado -> recarga. Si el publicado en vivo ya no es de
+// hoy -> banda roja (el pipeline no corrió; recargar no lo arregla, pero avisa).
+function vigilarFrescura(){
+  const CUT="2026-08-20";
+  const hoy=()=>new Date().toLocaleDateString("en-CA");
+  const dias=()=>Math.round((Date.parse(hoy())-Date.parse(CUT))/864e5);
+  const banda=t=>{let b=document.getElementById("sn-fresco");
+    if(!b){b=document.createElement("div");b.id="sn-fresco";
+      b.style.cssText="position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;"+
+        "font:600 13px/1.4 system-ui,-apple-system,Arial,sans-serif;padding:8px 14px;text-align:center;cursor:pointer";
+      b.title="Clic para recargar";b.addEventListener("click",()=>location.reload());
+      document.body.appendChild(b);}
+    b.textContent=t;};
+  async function vivo(){try{
+      const r=await fetch("index.html?cb="+Date.now(),{cache:"no-store"});
+      const m=(await r.text()).match(/santeco-cutoff" content="([^"]+)/);
+      return m?m[1]:null;}catch(e){return null;}}
+  async function revisar(){
+    const v=await vivo();
+    if(v&&v!==CUT){location.reload();return;}          // hay corte nuevo: esta pestaña está vieja
+    const d=dias();
+    if(d>0) banda("⚠ Datos al "+CUT+" · hace "+d+(d===1?" día":" días")+" — el panel no se actualizó hoy");
+  }
+  revisar();
+  setInterval(revisar,9e5);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)revisar();});
+}
 </script></body></html>
