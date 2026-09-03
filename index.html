@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="es-MX"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="santeco-cutoff" content="2026-09-02">
-<meta name="santeco-published" content="2026-09-02 07:00">
+<meta name="santeco-cutoff" content="2026-09-03">
+<meta name="santeco-published" content="2026-09-03 07:00">
 <title>Reporte de Ventas Santeco</title></head>
 <body>
 <script>
 (async()=>{
   const N=25;let b="";
-  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt?v=2026-09-02-v15",{cache:"no-store"});b+=(await r.text());}
+  for(let i=0;i<N;i++){const r=await fetch("h/p"+i+".txt?v=2026-09-03-v15",{cache:"no-store"});b+=(await r.text());}
   b=b.replace(/\s/g,"");
   const by=Uint8Array.from(atob(b),c=>c.charCodeAt(0));
   const s=new Blob([by]).stream().pipeThrough(new DecompressionStream("gzip"));
@@ -21,7 +21,7 @@
 // Si hay corte nuevo publicado -> recarga. Si el publicado en vivo ya no es de
 // hoy -> banda roja (el pipeline no corrió; recargar no lo arregla, pero avisa).
 function vigilarFrescura(){
-  const CUT="2026-09-02";
+  const CUT="2026-09-03";
   const hoy=()=>new Date().toLocaleDateString("en-CA");
   const dias=()=>Math.round((Date.parse(hoy())-Date.parse(CUT))/864e5);
   const banda=t=>{let b=document.getElementById("sn-fresco");
